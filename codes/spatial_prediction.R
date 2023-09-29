@@ -130,6 +130,10 @@ spatial_prediction_joint_model<-function(data,estim,S.samples,c1,c2,output ){
   C1 <- sigma2.pi*(exp(-U.pred.coords/phiS)+exp(-U.pred.coords/phiT))
   A1 <- as.matrix(C1%*%M1.inv)
   mean.cond.S1 <- sapply(1:n.samples, function(i) beta1+A1%*%S.samples[i,1:n.x]) # <-- this line
+  
+  #mu1 <- rep(beta1,nrow(S.samples))
+  #mean.cond.S1 <- sapply(1:n.samples, function(i) beta1+A1%*%(S.samples[i,1:n.x]-mu1)) # <-- this does not give correct answer
+  
   #sd.cond.S1 <- sqrt(sigma2.pi-apply(A1*C1,1,sum))
   sd.cond.S1 <- sqrt(2*sigma2.pi-apply(A1*C1,1,sum))
   S1.samples <- sapply(1:n.samples,function(i) mean.cond.S1[,i]+sd.cond.S1*rnorm(nrow(grid.pred)))
@@ -141,6 +145,10 @@ spatial_prediction_joint_model<-function(data,estim,S.samples,c1,c2,output ){
   C2 <- sigma2.lambda*(exp(-U.pred.coords/phiS)+exp(-U.pred.coords/phiT))
   A2 <- as.matrix(C2%*%M2.inv)
   mean.cond.S2 <- sapply(1:n.samples, function(i) beta2+A2%*%S.samples[i,(n.x+1):(2*n.x)]) # <-- this line
+  
+  #mu2 <- rep(beta2,nrow(S.samples))
+  #mean.cond.S2 <- sapply(1:n.samples, function(i) beta2+A2%*%(S.samples[i,(n.x+1):(2*n.x)]-mu2)) # <-- this does not give correct answer
+  
   #sd.cond.S2 <- sqrt(sigma2.lambda-apply(A2*C2,1,sum))
   sd.cond.S2 <- sqrt(2*sigma2.lambda-apply(A2*C2,1,sum))
   S2.samples <- sapply(1:n.samples,function(i) mean.cond.S2[,i]+sd.cond.S2*rnorm(nrow(grid.pred)))
@@ -273,4 +281,4 @@ spatial_prediction_joint_model<-function(data,estim,S.samples,c1,c2,output ){
 spatial_prediction_joint_model(data,
                                ASCARIS.2008.estim,
                                ASCARIS.2008.S.samples,
-                               100,1000,"None")
+                               5000,50000,"None")
